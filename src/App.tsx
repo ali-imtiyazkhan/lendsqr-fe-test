@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./App.css";
 
 type Page = "login" | "users" | "details";
 type Status = "Inactive" | "Pending" | "Blacklisted" | "Active";
