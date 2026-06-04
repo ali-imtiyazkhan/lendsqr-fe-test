@@ -1,0 +1,155 @@
+.topbar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 10;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding: 0 30px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.topbar .logo {
+  width: 210px;
+  font-size: 24px;
+}
+
+.search {
+  display: flex;
+  width: min(400px, 32vw);
+  height: 40px;
+}
+
+.search input {
+  flex: 1;
+  border: 1px solid rgba(33, 63, 125, 0.2);
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  padding: 0 20px;
+  outline: none;
+}
+
+.search button {
+  width: 56px;
+  border: 0;
+  border-radius: 0 8px 8px 0;
+  background: var(--primary);
+  color: white;
+}
+
+.docs {
+  margin-left: auto;
+  color: var(--navy);
+}
+
+.bell {
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  font-size: 24px;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--navy);
+  font-weight: 500;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #f6b54e;
+  color: white;
+  font-weight: 700;
+}
+
+.sidebar {
+  position: fixed;
+  top: 100px;
+  bottom: 0;
+  left: 0;
+  width: 283px;
+  padding: 36px 0;
+  background: var(--white);
+  box-shadow: var(--shadow);
+  overflow-y: auto;
+}
+
+.switch,
+.side-link {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 30px;
+}
+
+.switch {
+  margin-bottom: 36px;
+  color: var(--navy);
+}
+
+.sidebar p {
+  margin: 28px 0 10px;
+  padding: 0 30px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.side-link {
+  position: relative;
+  color: var(--text);
+}
+
+.side-link.active {
+  background: rgba(57, 205, 204, 0.08);
+  color: var(--navy);
+}
+
+.side-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--primary);
+}
+
+.main {
+  margin-left: 283px;
+  padding: 160px 60px 60px;
+}
+
+@media (max-width: 760px) {
+  .sidebar {
+    display: none;
+  }
+
+  .topbar {
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  .topbar .logo {
+    width: auto;
+    font-size: 20px;
+  }
+
+  .search,
+  .docs,
+  .bell {
+    display: none;
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 140px 20px 40px;
+  }
+}
