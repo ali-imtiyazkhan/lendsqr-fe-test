@@ -1,0 +1,262 @@
+@use "variables" as *;
+
+.page-title {
+  margin: 0;
+  color: var(--navy);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr));
+  gap: 26px;
+  margin: 40px 0;
+}
+
+.stat-card {
+  min-height: 160px;
+  padding: 20px 30px;
+  background: $white;
+  border: 1px solid $navy-border;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+
+  span {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  strong {
+    color: var(--navy);
+    font-size: 24px;
+  }
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  border-radius: 50%;
+
+  &.pink {
+    background: rgba(223, 24, 255, 0.1);
+    color: #df18ff;
+  }
+
+  &.purple {
+    background: rgba(87, 24, 255, 0.1);
+    color: #5718ff;
+  }
+
+  &.orange {
+    background: rgba(245, 95, 68, 0.1);
+    color: #f55f44;
+  }
+
+  &.red {
+    background: rgba(255, 51, 102, 0.1);
+    color: #ff3366;
+  }
+}
+
+.table-card {
+  position: relative;
+  overflow-x: auto;
+  background: $white;
+  border: 1px solid $navy-border;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 22px 20px;
+  text-align: left;
+  border-bottom: 1px solid $navy-border-strong;
+  white-space: nowrap;
+}
+
+th {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+
+  button {
+    border: 0;
+    background: transparent;
+    color: var(--text);
+  }
+}
+
+td {
+  font-size: 14px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
+  text-transform: capitalize;
+
+  &.inactive {
+    background: rgba(84, 95, 125, 0.08);
+    color: var(--text);
+  }
+
+  &.pending {
+    background: rgba(233, 178, 0, 0.12);
+    color: var(--warning);
+  }
+
+  &.blacklisted {
+    background: rgba(228, 3, 59, 0.1);
+    color: var(--danger);
+  }
+
+  &.active {
+    background: rgba(57, 205, 98, 0.1);
+    color: var(--success);
+  }
+}
+
+.menu-cell {
+  position: relative;
+}
+
+.dots {
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+  color: var(--text);
+}
+
+.row-menu {
+  position: absolute;
+  right: 25px;
+  top: 52px;
+  width: 180px;
+  padding: 10px 0;
+  background: $white;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  z-index: 4;
+
+  button {
+    width: 100%;
+    height: 38px;
+    border: 0;
+    background: $white;
+    text-align: left;
+    padding: 0 20px;
+    color: var(--text);
+  }
+}
+
+.filter-panel {
+  position: absolute;
+  top: 58px;
+  left: 16px;
+  z-index: 5;
+  width: 270px;
+  padding: 30px 20px;
+  background: $white;
+  border: 1px solid $text-border;
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+
+  label {
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  span {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  input,
+  select {
+    width: 100%;
+    height: 40px;
+    border: 1px solid $navy-input-border;
+    border-radius: 8px;
+    padding: 0 12px;
+    color: var(--text);
+    background: $white;
+  }
+}
+
+.filter-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.reset,
+.filter {
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.reset {
+  border: 1px solid var(--text);
+  background: $white;
+  color: var(--text);
+}
+
+.filter {
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: $white;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 14px;
+
+  div {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  button {
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 4px;
+    background: rgba(33, 63, 125, 0.1);
+    color: var(--navy);
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}
