@@ -70,6 +70,13 @@
   background: #f6b54e;
   color: $white;
   font-weight: 700;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .sidebar {

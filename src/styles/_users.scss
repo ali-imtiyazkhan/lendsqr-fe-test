@@ -246,6 +246,26 @@ td {
     border-radius: 4px;
     background: rgba(33, 63, 125, 0.1);
     color: var(--navy);
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &.active {
+      background: rgba(57, 205, 204, 0.2);
+      color: var(--primary);
+    }
+  }
+}
+
+.table-message {
+  padding: 24px 20px;
+  margin: 0;
+  font-size: 14px;
+
+  &.error {
+    color: var(--danger);
   }
 }
 
