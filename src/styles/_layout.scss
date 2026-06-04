@@ -115,6 +115,7 @@
 .side-link {
   position: relative;
   color: var(--text);
+  text-decoration: none;
 
   &.active {
     background: rgba(57, 205, 204, 0.08);

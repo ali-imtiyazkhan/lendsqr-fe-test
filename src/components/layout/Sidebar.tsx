@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import { businessLinks, customerLinks } from "../../data/navigation";
 
 export default function Sidebar() {
@@ -7,7 +8,15 @@ export default function Sidebar() {
       <nav>
         <div className="side-link">⌂ Dashboard</div>
         <p>CUSTOMERS</p>
-        {customerLinks.map((item) => <div key={item} className={`side-link ${item === "Users" ? "active" : ""}`}>● {item}</div>)}
+        {customerLinks.map((item) => (
+          item === "Users" ? (
+            <NavLink key={item} to="/users" className={({ isActive }) => `side-link ${isActive ? "active" : ""}`}>
+              ● {item}
+            </NavLink>
+          ) : (
+            <div key={item} className="side-link">● {item}</div>
+          )
+        ))}
         <p>BUSINESSES</p>
         {businessLinks.map((item) => <div key={item} className="side-link">■ {item}</div>)}
       </nav>

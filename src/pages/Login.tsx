@@ -1,12 +1,30 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Logo from "../components/common/Logo";
 
-export default function Login({ onLogin }: { onLogin: () => void }) {
-  const [show, setShow] = useState(false);
+const AUTH_KEY = "lendsqr_auth";
+
+export function isAuthenticated() {
+  return localStorage.getItem(AUTH_KEY) === "true";
+}
+
+export function setAuthenticated() {
+  localStorage.setItem(AUTH_KEY, "true");
+}
+
+export default function Login() {
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = () => {
+    setAuthenticated();
+    navigate("/users");
+  };
 
   return (
     <section className="login-page">
       <div className="login-art">
-        <div className="logo"><span>▣</span> lendsqr</div>
+        <Logo />
         <div className="illustration">
           <div className="person" />
           <span className="bubble bubble-one" />
@@ -16,11 +34,30 @@ export default function Login({ onLogin }: { onLogin: () => void }) {
           <span className="shape shape-three" />
         </div>
       </div>
+
       <div className="login-panel">
-        <form className="login-form" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
-          <h1>Welcome!</h1><p>Enter details to login.</p>
-          <input className="field" placeholder="Email" type="email" />
-          <div className="password-wrap"><input className="field" placeholder="Password" type={show ? "text" : "password"} /><button type="button" onClick={() => setShow(!show)}>SHOW</button></div>
+        <form
+          className="login-form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleLogin();
+          }}
+        >
+          <h1>Welcome!</h1>
+          <p>Enter details to login.</p>
+
+          <input className="field" type="email" placeholder="Email" />
+          <div className="password-wrap">
+            <input
+              className="field"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+            />
+            <button type="button" onClick={() => setShowPassword((value) => !value)}>
+              SHOW
+            </button>
+          </div>
+
           <a href="#forgot">FORGOT PASSWORD?</a>
           <button className="login-submit">LOG IN</button>
         </form>
