@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import UserAvatar from "./components/common/UserAvatar";
-import { fetchUserById, fetchUsers, fetchUserStats, PAGE_SIZE } from "./services/userApi";
+import { loadUserDetails, fetchUsers, fetchUserStats, PAGE_SIZE } from "./services/userApi";
 import type { User, UserStats } from "./types/users";
 
 type Page = "login" | "users" | "details";
@@ -79,7 +79,7 @@ export default function App() {
     }
 
     setDetailLoading(true);
-    fetchUserById(selectedUserId)
+    loadUserDetails(selectedUserId)
       .then(setDetailUser)
       .finally(() => setDetailLoading(false));
   }, [page, selectedUserId]);
