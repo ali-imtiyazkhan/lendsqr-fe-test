@@ -1,4 +1,5 @@
 import type { PaginatedUsers, User, UserStats } from "../types/users";
+import { getUserDetails, saveUserDetails } from "./userStorage";
 
 const USERS_API = "/data/users.json";
 const PAGE_SIZE = 10;
@@ -40,6 +41,23 @@ export async function fetchUsers(page = 1, pageSize = PAGE_SIZE): Promise<Pagina
 export async function fetchUserById(id: string): Promise<User | null> {
   const allUsers = await loadUsers();
   return allUsers.find((user) => user.id === id) ?? null;
+}
+
+/** Read from localStorage first; fetch mock API and persist if not cached. */
+export async function loadUserDetails(id: string): Promise<User | null> {
+  const cached = getUserDetails(id);
+
+  if (cached) {
+    return cached;
+  }
+
+  const user = await fetchUserById(id);
+
+  if (user) {
+    saveUserDetails(user);
+  }
+
+  return user;
 }
 
 export async function fetchUserStats(): Promise<UserStats> {
