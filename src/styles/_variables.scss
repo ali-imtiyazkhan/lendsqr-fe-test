@@ -1,0 +1,27 @@
+// Design tokens
+$primary: #39cdcc;
+$navy: #213f7d;
+$text: #545f7d;
+$muted: #7a8aad;
+$bg: #fbfbfb;
+$white: #fff;
+$border: rgba(33, 63, 125, 0.12);
+$danger: #e4033b;
+$success: #39cd62;
+$warning: #e9b200;
+$shadow: 3px 5px 20px rgba(0, 0, 0, 0.04);
+
+$navy-border: rgba(33, 63, 125, 0.06);
+$navy-border-strong: rgba(33, 63, 125, 0.1);
+$navy-input-border: rgba(33, 63, 125, 0.2);
+$text-input-border: rgba(84, 95, 125, 0.15);
+$text-border: rgba(84, 95, 125, 0.14);
+$text-divider: rgba(84, 95, 125, 0.2);
+
+$sidebar-width: 283px;
+$topbar-height: 100px;
+
+$breakpoint-sm: 760px;
+$breakpoint-md: 1100px;
+
+$font-family: "Work Sans", Arial, sans-serif;

@@ -1,0 +1,49 @@
+@use "variables" as *;
+
+:root {
+  --primary: #{$primary};
+  --navy: #{$navy};
+  --text: #{$text};
+  --muted: #{$muted};
+  --bg: #{$bg};
+  --white: #{$white};
+  --border: #{$border};
+  --danger: #{$danger};
+  --success: #{$success};
+  --warning: #{$warning};
+  --shadow: #{$shadow};
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: $font-family;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--navy);
+  font-size: 28px;
+  font-weight: 700;
+
+  span {
+    color: var(--primary);
+  }
+}

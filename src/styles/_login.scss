@@ -1,3 +1,5 @@
+@use "variables" as *;
+
 .login-page {
   min-height: 100vh;
   display: grid;
@@ -88,24 +90,34 @@
 .login-form {
   width: 100%;
   max-width: 450px;
-}
 
-.login-form h1 {
-  margin: 0 0 10px;
-  color: var(--navy);
-  font-size: 40px;
-  line-height: 1.35;
-}
+  h1 {
+    margin: 0 0 10px;
+    color: var(--navy);
+    font-size: 40px;
+    line-height: 1.35;
+  }
 
-.login-form p {
-  margin: 0 0 60px;
-  font-size: 20px;
+  p {
+    margin: 0 0 60px;
+    font-size: 20px;
+  }
+
+  a {
+    display: inline-block;
+    margin: 24px 0 30px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+  }
 }
 
 .field {
   width: 100%;
   height: 50px;
-  border: 2px solid rgba(84, 95, 125, 0.15);
+  border: 2px solid $text-input-border;
   border-radius: 5px;
   padding: 0 16px;
   color: var(--text);
@@ -115,33 +127,23 @@
 .password-wrap {
   position: relative;
   margin-top: 24px;
-}
 
-.password-wrap .field {
-  padding-right: 70px;
-}
+  .field {
+    padding-right: 70px;
+  }
 
-.password-wrap button {
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  border: 0;
-  background: transparent;
-  transform: translateY(-50%);
-  color: var(--primary);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.login-form a {
-  display: inline-block;
-  margin: 24px 0 30px;
-  color: var(--primary);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-decoration: none;
+  button {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    border: 0;
+    background: transparent;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
 }
 
 .login-submit {
@@ -156,7 +158,7 @@
   letter-spacing: 1px;
 }
 
-@media (max-width: 760px) {
+@media (max-width: $breakpoint-sm) {
   .login-page {
     grid-template-columns: 1fr;
   }
