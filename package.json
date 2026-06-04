@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run generate:users && tsc -b && vite build",
+    "generate:users": "node scripts/generate-users.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },

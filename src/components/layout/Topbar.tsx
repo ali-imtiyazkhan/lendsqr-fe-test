@@ -1,3 +1,5 @@
+import UserAvatar from "../common/UserAvatar";
+
 export default function Topbar() {
     return (
       <header className="topbar">
@@ -5,7 +7,12 @@ export default function Topbar() {
         <div className="search"><input placeholder="Search for anything" /><button>⌕</button></div>
         <a className="docs" href="#docs">Docs</a>
         <button className="bell">○</button>
-        <div className="account"><div className="avatar">A</div><span>Adedeji</span><span>⌄</span></div>
+        <div className="account">
+          <div className="avatar"><UserAvatar /></div>
+          <span>Adedeji</span><span>⌄</span>
+        </div>
       </header>
     );
   }
+
+  

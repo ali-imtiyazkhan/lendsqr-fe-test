@@ -1,24 +1,88 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import UserAvatar from "./components/common/UserAvatar";
+import { fetchUserById, fetchUsers, fetchUserStats, PAGE_SIZE } from "./services/userApi";
+import type { User, UserStats } from "./types/users";
 
 type Page = "login" | "users" | "details";
-type Status = "Inactive" | "Pending" | "Blacklisted" | "Active";
-
-const users = [
-  { id: "1", organization: "Lendsqr", username: "Adedeji", email: "adedeji@lendsqr.com", phone: "08078903721", dateJoined: "May 15, 2020 10:00 AM", status: "Inactive" as Status },
-  { id: "2", organization: "Irorun", username: "Debby Ogana", email: "debby2@irorun.com", phone: "08160780928", dateJoined: "Apr 30, 2020 10:00 AM", status: "Pending" as Status },
-  { id: "3", organization: "Lendstar", username: "Grace Effiom", email: "grace@lendstar.com", phone: "07060780922", dateJoined: "Apr 30, 2020 10:00 AM", status: "Blacklisted" as Status },
-  { id: "4", organization: "Lendsqr", username: "Tosin Dokunmu", email: "tosin@lendsqr.com", phone: "07033000000", dateJoined: "Apr 10, 2020 10:00 AM", status: "Active" as Status },
-  { id: "5", organization: "Lendsqr", username: "Oluwatobi", email: "tobi@lendsqr.com", phone: "08122233445", dateJoined: "Apr 30, 2020 10:00 AM", status: "Active" as Status },
-  { id: "6", organization: "Irorun", username: "Helen Lawal", email: "helen@irorun.com", phone: "09044556677", dateJoined: "Apr 10, 2020 10:00 AM", status: "Inactive" as Status },
-];
 
 const customerLinks = ["Users", "Guarantors", "Loans", "Decision Models", "Savings", "Loan Requests", "Whitelist", "Karma"];
 const businessLinks = ["Organization", "Loan Products", "Savings Products", "Fees and Charges", "Transactions", "Services", "Service Account", "Settlements"];
+
+function formatCount(value: number) {
+  return value.toLocaleString("en-US");
+}
+
+function getPageNumbers(current: number, total: number): (number | "...")[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, index) => index + 1);
+  }
+
+  const pages: (number | "...")[] = [1];
+
+  if (current > 3) {
+    pages.push("...");
+  }
+
+  for (let page = Math.max(2, current - 1); page <= Math.min(total - 1, current + 1); page += 1) {
+    pages.push(page);
+  }
+
+  if (current < total - 2) {
+    pages.push("...");
+  }
+
+  pages.push(total);
+  return pages;
+}
+
+function tierStars(tier: number) {
+  return `${"★".repeat(tier)}${"☆".repeat(3 - tier)}`;
+}
 
 export default function App() {
   const [page, setPage] = useState<Page>("login");
   const [filterOpen, setFilterOpen] = useState(false);
   const [menuId, setMenuId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [users, setUsers] = useState<User[]>([]);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [stats, setStats] = useState<UserStats | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [detailUser, setDetailUser] = useState<User | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+
+  useEffect(() => {
+    if (page !== "users") {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    Promise.all([fetchUsers(currentPage), fetchUserStats()])
+      .then(([paginated, userStats]) => {
+        setUsers(paginated.users);
+        setTotalUsers(paginated.total);
+        setTotalPages(paginated.totalPages);
+        setStats(userStats);
+      })
+      .catch((err: Error) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [page, currentPage]);
+
+  useEffect(() => {
+    if (page !== "details" || !selectedUserId) {
+      return;
+    }
+
+    setDetailLoading(true);
+    fetchUserById(selectedUserId)
+      .then(setDetailUser)
+      .finally(() => setDetailLoading(false));
+  }, [page, selectedUserId]);
 
   if (page === "login") {
     return <LoginPage onLogin={() => setPage("users")} />;
@@ -31,15 +95,38 @@ export default function App() {
       <main className="main">
         {page === "users" && (
           <UsersPage
+            users={users}
+            stats={stats}
+            loading={loading}
+            error={error}
             filterOpen={filterOpen}
             menuId={menuId}
-            onToggleFilter={() => setFilterOpen((v) => !v)}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalUsers={totalUsers}
+            pageSize={PAGE_SIZE}
+            onPageChange={setCurrentPage}
+            onToggleFilter={() => setFilterOpen((value) => !value)}
             onToggleMenu={(id) => setMenuId(menuId === id ? null : id)}
-            onDetails={() => setPage("details")}
+            onDetails={(id) => {
+              setSelectedUserId(id);
+              setMenuId(null);
+              setPage("details");
+            }}
           />
         )}
 
-        {page === "details" && <UserDetails onBack={() => setPage("users")} />}
+        {page === "details" && (
+          <UserDetails
+            user={detailUser}
+            loading={detailLoading}
+            onBack={() => {
+              setPage("users");
+              setSelectedUserId(null);
+              setDetailUser(null);
+            }}
+          />
+        )}
       </main>
     </div>
   );
@@ -63,14 +150,14 @@ function LoginPage({ onLogin }: { onLogin: () => void }) {
       </div>
 
       <div className="login-panel">
-        <form className="login-form" onSubmit={(e) => { e.preventDefault(); onLogin(); }}>
+        <form className="login-form" onSubmit={(event) => { event.preventDefault(); onLogin(); }}>
           <h1>Welcome!</h1>
           <p>Enter details to login.</p>
 
           <input className="field" type="email" placeholder="Email" />
           <div className="password-wrap">
             <input className="field" type={showPassword ? "text" : "password"} placeholder="Password" />
-            <button type="button" onClick={() => setShowPassword((v) => !v)}>SHOW</button>
+            <button type="button" onClick={() => setShowPassword((value) => !value)}>SHOW</button>
           </div>
 
           <a href="#forgot">FORGOT PASSWORD?</a>
@@ -92,7 +179,9 @@ function Topbar() {
       <a href="#docs" className="docs">Docs</a>
       <button className="bell">○</button>
       <div className="account">
-        <div className="avatar">A</div>
+        <div className="avatar">
+          <UserAvatar />
+        </div>
         <span>Adedeji</span>
         <span>⌄</span>
       </div>
@@ -120,63 +209,109 @@ function Sidebar() {
 }
 
 function UsersPage(props: {
+  users: User[];
+  stats: UserStats | null;
+  loading: boolean;
+  error: string | null;
   filterOpen: boolean;
   menuId: string | null;
+  currentPage: number;
+  totalPages: number;
+  totalUsers: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
   onToggleFilter: () => void;
   onToggleMenu: (id: string) => void;
-  onDetails: () => void;
+  onDetails: (id: string) => void;
 }) {
+  const pageNumbers = getPageNumbers(props.currentPage, props.totalPages);
+  const showingFrom = props.totalUsers === 0 ? 0 : (props.currentPage - 1) * props.pageSize + 1;
+  const showingTo = Math.min(props.currentPage * props.pageSize, props.totalUsers);
+
   return (
     <>
       <h2 className="page-title">Users</h2>
 
       <section className="stats">
-        <StatCard label="USERS" value="2,453" tone="pink" />
-        <StatCard label="ACTIVE USERS" value="2,453" tone="purple" />
-        <StatCard label="USERS WITH LOANS" value="12,453" tone="orange" />
-        <StatCard label="USERS WITH SAVINGS" value="102,453" tone="red" />
+        <StatCard label="USERS" value={formatCount(props.stats?.total ?? 0)} tone="pink" />
+        <StatCard label="ACTIVE USERS" value={formatCount(props.stats?.active ?? 0)} tone="purple" />
+        <StatCard label="USERS WITH LOANS" value={formatCount(props.stats?.withLoans ?? 0)} tone="orange" />
+        <StatCard label="USERS WITH SAVINGS" value={formatCount(props.stats?.withSavings ?? 0)} tone="red" />
       </section>
 
       <section className="table-card">
         {props.filterOpen && <FilterPanel />}
 
-        <table>
-          <thead>
-            <tr>
-              {["ORGANIZATION", "USERNAME", "EMAIL", "PHONE NUMBER", "DATE JOINED", "STATUS"].map((head) => (
-                <th key={head}>{head} <button onClick={props.onToggleFilter}>≡</button></th>
-              ))}
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.organization}</td>
-                <td>{user.username}</td>
-                <td>{user.email}</td>
-                <td>{user.phone}</td>
-                <td>{user.dateJoined}</td>
-                <td><span className={`status ${user.status.toLowerCase()}`}>{user.status}</span></td>
-                <td className="menu-cell">
-                  <button className="dots" onClick={() => props.onToggleMenu(user.id)}>⋮</button>
-                  {props.menuId === user.id && (
-                    <div className="row-menu">
-                      <button onClick={props.onDetails}>View Details</button>
-                      <button>Blacklist User</button>
-                      <button>Activate User</button>
-                    </div>
-                  )}
-                </td>
+        {props.loading && <p className="table-message">Loading users...</p>}
+        {props.error && <p className="table-message error">{props.error}</p>}
+
+        {!props.loading && !props.error && (
+          <table>
+            <thead>
+              <tr>
+                {["ORGANIZATION", "USERNAME", "EMAIL", "PHONE NUMBER", "DATE JOINED", "STATUS"].map((head) => (
+                  <th key={head}>{head} <button onClick={props.onToggleFilter}>≡</button></th>
+                ))}
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {props.users.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.organization}</td>
+                  <td>{user.username}</td>
+                  <td>{user.email}</td>
+                  <td>{user.phone}</td>
+                  <td>{user.dateJoined}</td>
+                  <td><span className={`status ${user.status.toLowerCase()}`}>{user.status}</span></td>
+                  <td className="menu-cell">
+                    <button className="dots" onClick={() => props.onToggleMenu(user.id)}>⋮</button>
+                    {props.menuId === user.id && (
+                      <div className="row-menu">
+                        <button onClick={() => props.onDetails(user.id)}>View Details</button>
+                        <button>Blacklist User</button>
+                        <button>Activate User</button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </section>
 
       <div className="pagination">
-        <span>Showing <b>100</b> out of 100</span>
-        <div><button>‹</button><span>1</span><span>2</span><span>3</span><span>...</span><span>15</span><span>16</span><button>›</button></div>
+        <span>
+          Showing <b>{showingFrom === 0 ? 0 : `${showingFrom}-${showingTo}`}</b> out of {formatCount(props.totalUsers)}
+        </span>
+        <div>
+          <button
+            disabled={props.currentPage === 1}
+            onClick={() => props.onPageChange(props.currentPage - 1)}
+          >
+            ‹
+          </button>
+          {pageNumbers.map((pageNumber, index) =>
+            pageNumber === "..." ? (
+              <span key={`ellipsis-${index}`}>...</span>
+            ) : (
+              <button
+                key={pageNumber}
+                className={pageNumber === props.currentPage ? "active" : ""}
+                onClick={() => props.onPageChange(pageNumber)}
+              >
+                {pageNumber}
+              </button>
+            ),
+          )}
+          <button
+            disabled={props.currentPage === props.totalPages}
+            onClick={() => props.onPageChange(props.currentPage + 1)}
+          >
+            ›
+          </button>
+        </div>
       </div>
     </>
   );
@@ -199,10 +334,25 @@ function FilterPanel() {
   );
 }
 
-function UserDetails({ onBack }: { onBack: () => void }) {
+function UserDetails(props: { user: User | null; loading: boolean; onBack: () => void }) {
+  if (props.loading) {
+    return <p className="table-message">Loading user details...</p>;
+  }
+
+  if (!props.user) {
+    return (
+      <>
+        <button className="back" onClick={props.onBack}>← Back to Users</button>
+        <p className="table-message error">User not found.</p>
+      </>
+    );
+  }
+
+  const { user } = props;
+
   return (
     <>
-      <button className="back" onClick={onBack}>← Back to Users</button>
+      <button className="back" onClick={props.onBack}>← Back to Users</button>
 
       <div className="details-heading">
         <h2>User Details</h2>
@@ -214,31 +364,53 @@ function UserDetails({ onBack }: { onBack: () => void }) {
 
       <section className="profile-card">
         <div className="profile-main">
-          <div className="profile-icon">♙</div>
-          <div><h3>Grace Effiom</h3><p>LSQFf587g90</p></div>
+          <div className="profile-icon">
+            <UserAvatar alt={`${user.fullName} avatar`} />
+          </div>
+          <div><h3>{user.fullName}</h3><p>{user.accountId}</p></div>
           <div className="divider" />
-          <div><p>User’s Tier</p><strong className="stars">★☆☆</strong></div>
+          <div><p>User’s Tier</p><strong className="stars">{tierStars(user.tier)}</strong></div>
           <div className="divider" />
-          <div><h3>₦200,000.00</h3><p>9912345678/Providus Bank</p></div>
+          <div><h3>{user.accountBalance}</h3><p>{user.bankAccount}</p></div>
         </div>
         <div className="tabs">
-          {["General Details", "Documents", "Bank Details", "Loans", "Savings", "App and System"].map((tab, i) => (
-            <button key={tab} className={i === 0 ? "selected" : ""}>{tab}</button>
+          {["General Details", "Documents", "Bank Details", "Loans", "Savings", "App and System"].map((tab, index) => (
+            <button key={tab} className={index === 0 ? "selected" : ""}>{tab}</button>
           ))}
         </div>
       </section>
 
       <section className="info-card">
         <InfoSection title="Personal Information" items={[
-          ["FULL NAME", "Grace Effiom"], ["PHONE NUMBER", "07060780922"], ["EMAIL ADDRESS", "graceeffiom@gmail.com"], ["BVN", "07060780922"], ["GENDER", "Female"],
-          ["MARITAL STATUS", "Single"], ["CHILDREN", "None"], ["TYPE OF RESIDENCE", "Parent’s Apartment"],
+          ["FULL NAME", user.fullName],
+          ["PHONE NUMBER", user.phone],
+          ["EMAIL ADDRESS", user.email],
+          ["BVN", user.bvn],
+          ["GENDER", user.gender],
+          ["MARITAL STATUS", user.maritalStatus],
+          ["CHILDREN", user.children],
+          ["TYPE OF RESIDENCE", user.residenceType],
         ]} />
         <InfoSection title="Education and Employment" items={[
-          ["LEVEL OF EDUCATION", "B.Sc"], ["EMPLOYMENT STATUS", "Employed"], ["SECTOR OF EMPLOYMENT", "FinTech"], ["DURATION OF EMPLOYMENT", "2 years"],
-          ["OFFICE EMAIL", "graceeffiom@lendsqr.com"], ["MONTHLY INCOME", "₦200,000.00 - ₦400,000.00"], ["LOAN REPAYMENT", "40,000"],
+          ["LEVEL OF EDUCATION", user.educationLevel],
+          ["EMPLOYMENT STATUS", user.employmentStatus],
+          ["SECTOR OF EMPLOYMENT", user.employmentSector],
+          ["DURATION OF EMPLOYMENT", user.employmentDuration],
+          ["OFFICE EMAIL", user.officeEmail],
+          ["MONTHLY INCOME", user.monthlyIncome],
+          ["LOAN REPAYMENT", user.loanRepayment],
         ]} />
-        <InfoSection title="Socials" items={[["TWITTER", "@grace_effiom"], ["FACEBOOK", "Grace Effiom"], ["INSTAGRAM", "@grace_effiom"]]} />
-        <InfoSection title="Guarantor" items={[["FULL NAME", "Grace Effiom"], ["PHONE NUMBER", "07060780922"], ["EMAIL ADDRESS", "graceeffiom@gmail.com"], ["RELATIONSHIP", "Sister"]]} />
+        <InfoSection title="Socials" items={[
+          ["TWITTER", user.socials.twitter],
+          ["FACEBOOK", user.socials.facebook],
+          ["INSTAGRAM", user.socials.instagram],
+        ]} />
+        <InfoSection title="Guarantor" items={[
+          ["FULL NAME", user.guarantor.fullName],
+          ["PHONE NUMBER", user.guarantor.phone],
+          ["EMAIL ADDRESS", user.guarantor.email],
+          ["RELATIONSHIP", user.guarantor.relationship],
+        ]} />
       </section>
     </>
   );

@@ -82,6 +82,14 @@
   background: rgba(33, 63, 125, 0.16);
   color: var(--navy);
   font-size: 42px;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .divider {
