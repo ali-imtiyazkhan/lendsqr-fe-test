@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createMockUsers } from "../test/mockUser";
+import { createMockUsers } from "../testing/mockUser";
 import {
   fetchUserById,
   fetchUsers,

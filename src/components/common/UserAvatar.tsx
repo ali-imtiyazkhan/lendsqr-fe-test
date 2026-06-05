@@ -1,4 +1,4 @@
-import { USER_AVATAR_SRC } from "../../constants/assets";
+import { USER_AVATAR_SRC } from "../../config/assets";
 
 type UserAvatarProps = {
   className?: string;

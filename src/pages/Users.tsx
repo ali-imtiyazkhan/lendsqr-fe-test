@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FilterPanel from "../components/users/FilterPanel";
 import Pagination from "../components/users/Pagination";
 import UserStatsSection from "../components/users/UserStatsSection";
-import UsersTable from "../components/users/userTable";
+import UsersTable from "../components/users/UsersTable";
 import { fetchUsers, fetchUserStats, PAGE_SIZE } from "../services/userApi";
 import type { User, UserStats } from "../types/users";
 

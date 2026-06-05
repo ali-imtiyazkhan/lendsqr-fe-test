@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { isAuthenticated } from "../../pages/Login";
+import { isAuthenticated } from "../../lib/auth";
 
 export default function RequireAuth() {
   if (!isAuthenticated()) {

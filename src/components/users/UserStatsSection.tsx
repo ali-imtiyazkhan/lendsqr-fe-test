@@ -1,4 +1,4 @@
-import StatCard from "./Statcard";
+import StatCard from "./StatCard";
 import type { UserStats } from "../../types/users";
 import { formatCount } from "../../utils/format";
 
