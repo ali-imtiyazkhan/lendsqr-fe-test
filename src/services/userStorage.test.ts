@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createMockUser } from "../test/mockUser";
+import { createMockUser } from "../testing/mockUser";
 import { getUserDetails, removeUserDetails, saveUserDetails } from "./userStorage";
 
 describe("userStorage", () => {

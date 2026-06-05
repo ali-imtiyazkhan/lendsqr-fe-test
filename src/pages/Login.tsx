@@ -1,16 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../components/common/Logo";
-
-const AUTH_KEY = "lendsqr_auth";
-
-export function isAuthenticated() {
-  return localStorage.getItem(AUTH_KEY) === "true";
-}
-
-export function setAuthenticated() {
-  localStorage.setItem(AUTH_KEY, "true");
-}
+import { setAuthenticated } from "../lib/auth";
 
 export default function Login() {
   const navigate = useNavigate();

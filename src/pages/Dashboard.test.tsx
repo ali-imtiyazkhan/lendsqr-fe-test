@@ -1,8 +1,8 @@
 import { screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import * as userApi from "../services/userApi";
-import { createMockUsers } from "../test/mockUser";
-import { renderWithRouter } from "../test/renderWithRouter";
+import { createMockUsers } from "../testing/mockUser";
+import { renderWithRouter } from "../testing/renderWithRouter";
 import Dashboard from "./Dashboard";
 
 describe("Dashboard", () => {

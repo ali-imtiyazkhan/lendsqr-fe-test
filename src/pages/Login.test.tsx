@@ -1,8 +1,9 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { renderWithRouter } from "../test/renderWithRouter";
-import Login, { isAuthenticated, setAuthenticated } from "./Login";
+import { isAuthenticated, setAuthenticated } from "../lib/auth";
+import { renderWithRouter } from "../testing/renderWithRouter";
+import Login from "./Login";
 
 const navigateMock = vi.fn();
 

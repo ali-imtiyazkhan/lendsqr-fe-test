@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import * as userApi from "../services/userApi";
-import { createMockUser } from "../test/mockUser";
+import { createMockUser } from "../testing/mockUser";
 import UserDetail from "./UserDetail";
 
 function renderUserDetail(id: string) {

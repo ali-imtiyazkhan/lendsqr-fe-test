@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { setAuthenticated } from "../../pages/Login";
+import { setAuthenticated } from "../../lib/auth";
 import RequireAuth from "./RequireAuth";
 
 function renderAuthRoute(initialPath: string) {

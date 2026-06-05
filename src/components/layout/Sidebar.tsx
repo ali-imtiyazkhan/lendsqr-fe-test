@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { businessLinks, customerLinks } from "../../data/navigation";
+import { businessLinks, customerLinks } from "../../config/navigation";
 
 export default function Sidebar() {
   return (
