@@ -5,8 +5,13 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="switch">▣ Switch Organization <span>⌄</span></div>
-      <nav>
-        <div className="side-link">⌂ Dashboard</div>
+      <nav aria-label="Main navigation">
+        <NavLink
+          to="/dashboard"
+          className={({ isActive }) => `side-link ${isActive ? "active" : ""}`}
+        >
+          ⌂ Dashboard
+        </NavLink>
         <p>CUSTOMERS</p>
         {customerLinks.map((item) => (
           item === "Users" ? (

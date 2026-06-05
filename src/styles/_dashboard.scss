@@ -1,0 +1,54 @@
+@use "variables" as *;
+
+.dashboard-recent {
+  margin-top: 10px;
+}
+
+.dashboard-recent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+
+  h3 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
+
+.dashboard-link {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.dashboard-user-link {
+  color: var(--navy);
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--primary);
+    text-decoration: underline;
+  }
+}
+
+.dashboard-recent .table-card table {
+  min-width: 640px;
+}
+
+@media (max-width: $breakpoint-sm) {
+  .dashboard-recent-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
