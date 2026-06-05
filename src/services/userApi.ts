@@ -71,4 +71,8 @@ export async function fetchUserStats(): Promise<UserStats> {
   };
 }
 
+export function resetUsersCache(): void {
+  usersCache = null;
+}
+
 export { PAGE_SIZE };
