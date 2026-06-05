@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FilterPanel from "../components/users/FilterPanel";
 import Pagination from "../components/users/Pagination";
-import StatCard from "../components/users/Statcard";
+import UserStatsSection from "../components/users/UserStatsSection";
 import UsersTable from "../components/users/userTable";
 import { fetchUsers, fetchUserStats, PAGE_SIZE } from "../services/userApi";
 import type { User, UserStats } from "../types/users";
-import { formatCount } from "../utils/format";
 
 export default function Users() {
   const navigate = useNavigate();
@@ -42,35 +41,36 @@ export default function Users() {
     <>
       <h2 className="page-title">Users</h2>
 
-      <section className="stats">
-        <StatCard label="USERS" value={formatCount(stats?.total ?? 0)} tone="pink" />
-        <StatCard label="ACTIVE USERS" value={formatCount(stats?.active ?? 0)} tone="purple" />
-        <StatCard label="USERS WITH LOANS" value={formatCount(stats?.withLoans ?? 0)} tone="orange" />
-        <StatCard label="USERS WITH SAVINGS" value={formatCount(stats?.withSavings ?? 0)} tone="red" />
-      </section>
+      {loading && <p className="table-message">Loading users...</p>}
+      {error && <p className="table-message error">{error}</p>}
 
-      <section className="table-card">
-        {filterOpen && <FilterPanel />}
+      {!loading && !error && (
+        <>
+          <UserStatsSection stats={stats} loading={false} error={null} />
 
-        {loading && <p className="table-message">Loading users...</p>}
-        {error && <p className="table-message error">{error}</p>}
+          <section className="table-card">
+            {filterOpen && <FilterPanel />}
 
-        {!loading && !error && (
-          <UsersTable
-            users={users}
-            onFilter={() => setFilterOpen((value) => !value)}
-            onViewDetails={handleViewDetails}
+            {users.length === 0 ? (
+              <p className="table-message">No users found.</p>
+            ) : (
+              <UsersTable
+                users={users}
+                onFilter={() => setFilterOpen((value) => !value)}
+                onViewDetails={handleViewDetails}
+              />
+            )}
+          </section>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalUsers={totalUsers}
+            pageSize={PAGE_SIZE}
+            onPageChange={setCurrentPage}
           />
-        )}
-      </section>
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalUsers={totalUsers}
-        pageSize={PAGE_SIZE}
-        onPageChange={setCurrentPage}
-      />
+        </>
+      )}
     </>
   );
 }

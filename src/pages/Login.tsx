@@ -18,7 +18,7 @@ export default function Login() {
 
   const handleLogin = () => {
     setAuthenticated();
-    navigate("/users");
+    navigate("/dashboard");
   };
 
   return (

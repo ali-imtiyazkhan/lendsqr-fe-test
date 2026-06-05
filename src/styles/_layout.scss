@@ -116,6 +116,7 @@
   position: relative;
   color: var(--text);
   text-decoration: none;
+  cursor: pointer;
 
   &.active {
     background: rgba(57, 205, 204, 0.08);
