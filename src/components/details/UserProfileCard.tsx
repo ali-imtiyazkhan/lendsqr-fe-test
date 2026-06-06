@@ -4,9 +4,11 @@ import UserAvatar from "../common/UserAvatar";
 
 type UserProfileCardProps = {
   user: User;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 };
 
-export default function UserProfileCard({ user }: UserProfileCardProps) {
+export default function UserProfileCard({ user, activeTab, onTabChange }: UserProfileCardProps) {
   const tabs = ["General Details", "Documents", "Bank Details", "Loans", "Savings", "App and System"];
 
   return (
@@ -31,8 +33,12 @@ export default function UserProfileCard({ user }: UserProfileCardProps) {
         </div>
       </div>
       <div className="tabs">
-        {tabs.map((tab, index) => (
-          <button key={tab} className={index === 0 ? "selected" : ""}>
+        {tabs.map((tab) => (
+          <button
+            key={tab}
+            className={tab === activeTab ? "selected" : ""}
+            onClick={() => onTabChange(tab)}
+          >
             {tab}
           </button>
         ))}

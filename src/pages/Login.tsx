@@ -27,6 +27,9 @@ export default function Login() {
       </div>
 
       <div className="login-panel">
+        <div className="mobile-logo">
+          <Logo />
+        </div>
         <form
           className="login-form"
           onSubmit={(event) => {

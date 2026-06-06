@@ -66,11 +66,29 @@
 
 .table-card {
   position: relative;
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: $white;
   border: 1px solid $navy-border;
   border-radius: 4px;
   box-shadow: var(--shadow);
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(33, 63, 125, 0.2);
+    border-radius: 4px;
+    &:hover {
+      background: rgba(33, 63, 125, 0.3);
+    }
+  }
 }
 
 table {
@@ -272,11 +290,30 @@ td {
 @media (max-width: $breakpoint-md) {
   .stats {
     grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .stat-card {
+    padding: 20px;
   }
 }
 
 @media (max-width: $breakpoint-sm) {
   .stats {
     grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+
+    div {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
   }
 }

@@ -16,6 +16,21 @@
     width: 210px;
     font-size: 24px;
   }
+
+  .hamburger {
+    display: none;
+    background: transparent;
+    border: 0;
+    font-size: 24px;
+    color: var(--navy);
+    cursor: pointer;
+    padding: 8px;
+    outline: none;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .search {
@@ -89,6 +104,7 @@
   background: var(--white);
   box-shadow: var(--shadow);
   overflow-y: auto;
+  transition: transform 0.3s ease;
 
   p {
     margin: 28px 0 10px;
@@ -139,8 +155,26 @@
 }
 
 @media (max-width: $breakpoint-sm) {
+  .hamburger {
+    display: flex;
+  }
+
   .sidebar {
-    display: none;
+    transform: translateX(-100%);
+    z-index: 15;
+    top: $topbar-height;
+    height: calc(100vh - #{$topbar-height});
+
+    &.open {
+      transform: translateX(0);
+    }
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: $topbar-height 0 0 0;
+    z-index: 14;
+    background: rgba(0, 0, 0, 0.4);
   }
 
   .topbar {

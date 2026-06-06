@@ -87,6 +87,10 @@
   box-shadow: 0 15px 90px rgba(0, 0, 0, 0.03);
 }
 
+.mobile-logo {
+  display: none;
+}
+
 .login-form {
   width: 100%;
   max-width: 450px;
@@ -169,6 +173,27 @@
 
   .login-panel {
     min-height: 100vh;
-    padding: 32px;
+    padding: 40px 24px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mobile-logo {
+    display: block;
+    align-self: flex-start;
+    margin-bottom: 50px;
+    width: 100%;
+    max-width: 450px;
+  }
+
+  .login-form {
+    h1 {
+      font-size: 30px;
+    }
+    p {
+      margin-bottom: 40px;
+      font-size: 16px;
+    }
   }
 }
