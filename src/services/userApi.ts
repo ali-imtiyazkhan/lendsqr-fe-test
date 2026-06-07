@@ -22,8 +22,65 @@ async function loadUsers(): Promise<User[]> {
   return usersCache;
 }
 
-export async function fetchUsers(page = 1, pageSize = PAGE_SIZE): Promise<PaginatedUsers> {
-  const allUsers = await loadUsers();
+export type UserFilters = {
+  organization?: string;
+  username?: string;
+  email?: string;
+  date?: string;
+  phone?: string;
+  status?: string;
+};
+
+export async function fetchUsers(
+  page = 1,
+  pageSize = PAGE_SIZE,
+  filters?: UserFilters
+): Promise<PaginatedUsers> {
+  let allUsers = await loadUsers();
+
+  if (filters) {
+    if (filters.organization) {
+      allUsers = allUsers.filter(
+        (u) => u.organization.toLowerCase() === filters.organization?.toLowerCase()
+      );
+    }
+    if (filters.username) {
+      allUsers = allUsers.filter((u) =>
+        u.username.toLowerCase().includes(filters.username!.toLowerCase())
+      );
+    }
+    if (filters.email) {
+      allUsers = allUsers.filter((u) =>
+        u.email.toLowerCase().includes(filters.email!.toLowerCase())
+      );
+    }
+    if (filters.phone) {
+      allUsers = allUsers.filter((u) =>
+        u.phone.includes(filters.phone!)
+      );
+    }
+    if (filters.status) {
+      allUsers = allUsers.filter(
+        (u) => u.status.toLowerCase() === filters.status?.toLowerCase()
+      );
+    }
+    if (filters.date) {
+      allUsers = allUsers.filter((u) => {
+        try {
+          const uDate = new Date(u.dateJoined);
+          const fDate = new Date(filters.date!);
+          return (
+            uDate.getFullYear() === fDate.getFullYear() &&
+            uDate.getMonth() === fDate.getMonth() &&
+            uDate.getDate() === fDate.getDate()
+          );
+        } catch {
+          return false;
+        }
+      });
+    }
+  }
+
   const total = allUsers.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const safePage = Math.min(Math.max(page, 1), totalPages);
@@ -36,6 +93,12 @@ export async function fetchUsers(page = 1, pageSize = PAGE_SIZE): Promise<Pagina
     pageSize,
     totalPages,
   };
+}
+
+export async function fetchOrganizations(): Promise<string[]> {
+  const allUsers = await loadUsers();
+  const orgs = allUsers.map((u) => u.organization);
+  return Array.from(new Set(orgs)).sort();
 }
 
 export async function fetchUserById(id: string): Promise<User | null> {
