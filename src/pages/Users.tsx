@@ -4,7 +4,7 @@ import FilterPanel from "../components/users/FilterPanel";
 import Pagination from "../components/users/Pagination";
 import UserStatsSection from "../components/users/UserStatsSection";
 import UsersTable from "../components/users/UsersTable";
-import { fetchUsers, fetchUserStats, PAGE_SIZE } from "../services/userApi";
+import { fetchOrganizations, fetchUsers, fetchUserStats, PAGE_SIZE, type UserFilters } from "../services/userApi";
 import type { User, UserStats } from "../types/users";
 
 export default function Users() {
@@ -18,11 +18,29 @@ export default function Users() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [organizations, setOrganizations] = useState<string[]>([]);
+  const [activeFilters, setActiveFilters] = useState<UserFilters>({
+    organization: "",
+    username: "",
+    email: "",
+    date: "",
+    phone: "",
+    status: "",
+  });
+
+  // Fetch unique organizations on mount
+  useEffect(() => {
+    fetchOrganizations()
+      .then((orgs) => setOrganizations(orgs))
+      .catch((err) => console.error("Failed to load organizations:", err));
+  }, []);
+
+  // Fetch paginated users (supporting active filters) and user stats
   useEffect(() => {
     setLoading(true);
     setError(null);
 
-    Promise.all([fetchUsers(currentPage), fetchUserStats()])
+    Promise.all([fetchUsers(currentPage, PAGE_SIZE, activeFilters), fetchUserStats()])
       .then(([paginated, userStats]) => {
         setUsers(paginated.users);
         setTotalUsers(paginated.total);
@@ -31,10 +49,28 @@ export default function Users() {
       })
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [currentPage]);
+  }, [currentPage, activeFilters]);
 
   const handleViewDetails = (id: string) => {
     navigate(`/users/${id}`);
+  };
+
+  const handleApplyFilters = (newFilters: UserFilters) => {
+    setActiveFilters(newFilters);
+    setCurrentPage(1);
+  };
+
+  const handleResetFilters = () => {
+    const cleared = {
+      organization: "",
+      username: "",
+      email: "",
+      date: "",
+      phone: "",
+      status: "",
+    };
+    setActiveFilters(cleared);
+    setCurrentPage(1);
   };
 
   return (
@@ -49,10 +85,17 @@ export default function Users() {
           <UserStatsSection stats={stats} loading={false} error={null} />
 
           <section className="table-card">
-            {filterOpen && <FilterPanel />}
+            {filterOpen && (
+              <FilterPanel
+                activeFilters={activeFilters}
+                organizations={organizations}
+                onApply={handleApplyFilters}
+                onReset={handleResetFilters}
+              />
+            )}
 
             {users.length === 0 ? (
-              <p className="table-message">No users found.</p>
+              <p className="table-message" data-testid="no-users-message">No users found.</p>
             ) : (
               <UsersTable
                 users={users}
